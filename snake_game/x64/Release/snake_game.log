@@ -1,0 +1,7 @@
+﻿  snake_game.cpp
+C:\Users\user\source\repos\snake_game\snake_game\snake_game.cpp(96,17): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  Создание кода
+  Previous IPDB not found, fall back to full compilation.
+  All 92 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Создание кода завершено
+  snake_game.vcxproj -> C:\Users\user\source\repos\snake_game\x64\Release\snake_game.exe

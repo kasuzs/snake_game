@@ -1,23 +1,30 @@
 ﻿#include <iostream>
 #include <windows.h>
 #include <string>
+#include <ctime>
+
 using namespace std;
 
-void gotoxy(int x, int y) {						     //
+void gotoxy(short int x, short int y) {				 //
 	COORD pos = { x, y };						     //
-	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE); // display clear
+	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE); // Display clear
 	SetConsoleCursorPosition(output, pos);           // 
 }													 //
 
-const int HEIGHT = 30;
-const int WIDTH = 50;
+const int HEIGHT = 30; // Area Height
+const int WIDTH = 50;  // Area Width
 
-char snake = 'O';
+int score = 0; // Game score
 
-int snake_X = WIDTH / 2;
-int snake_Y = HEIGHT / 2;
+char snake = 'O'; // Snake
+char apple = '*';
 
-bool isRunning = true;
+
+
+int snake_X = WIDTH / 2;  // Position of the snake in width
+int snake_Y = HEIGHT / 2; // Position of the snake in height
+
+bool isRunning = true; 
 
 void LoadingMenu()
 {
@@ -79,20 +86,25 @@ int DOWN = 1;	// S
 int LEFT = 2;   // A
 int RIGHT = 3;  // D
 
-int direction = RIGHT;
+int direction = RIGHT; // initial snake direction
 
 
 
 int main()
 {
 	LoadingMenu();
+	std::srand(time(nullptr));
 
-	char arr[HEIGHT][WIDTH];
+	char arr[HEIGHT][WIDTH]{};
+
+	int apple_X = rand() % WIDTH / 2;
+	int apple_Y = rand() % HEIGHT / 2;
 
 	createArea(arr);
-
+	
 	while (isRunning)
 	{
+
 		if (GetKeyState('W') & 0x8000)
 		{
 			if (direction != DOWN)
@@ -145,16 +157,24 @@ int main()
 			arr[snake_Y][snake_X] = ' ';
 			snake_X++;
 		}
-		
 
 		arr[snake_Y][snake_X] = snake;
+
+		arr[apple_Y][apple_X] = apple;
+
+		if (snake_Y == apple_Y && snake_X == apple_X)
+		{
+			++score;
+			arr[apple_Y][apple_X] = ' ';
+			apple_X = 2 + rand() % ((WIDTH - 3));
+			apple_Y = 2 + rand() % ((HEIGHT - 3));
+		}
 
 		printArea(arr);
 
 		cout << "X pos: " << snake_X << endl;
 		cout << "Y pos: " << snake_Y << endl;
-
-		
+		cout << "Score: " << score << endl;
 
 		gotoxy(0, 0);
 
@@ -162,8 +182,9 @@ int main()
 		if (isRunning == false)
 		{
 			system("CLS");
-			system("color 2");
-			cout << "\n\n\n\n\n\n\n\n\n\n\t\t\tGame Over\n\n\n\n\n\n\n\n\n\n" << endl;
+			system("color 6");
+			cout << "\n\n\n\n\n\n\n\n\n\n\t\tGame Over\n\n";
+			cout << "\t      Total score: " << score << "\n\n\n\n\n\n\n\n\n" << endl;
 			return 0;
 		}
 		
