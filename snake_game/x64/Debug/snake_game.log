@@ -1,4 +1,4 @@
 ﻿  snake_game.cpp
-C:\Users\user\source\repos\snake_game\snake_game\snake_game.cpp(9,16): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
-C:\Users\user\source\repos\snake_game\snake_game\snake_game.cpp(9,19): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
+C:\Users\user\source\repos\snake_game\snake_game\snake_game.cpp(7,16): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
+C:\Users\user\source\repos\snake_game\snake_game\snake_game.cpp(7,19): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
   snake_game.vcxproj -> C:\Users\user\source\repos\snake_game\x64\Debug\snake_game.exe
