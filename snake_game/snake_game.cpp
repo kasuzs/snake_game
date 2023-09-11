@@ -2,6 +2,8 @@
 #include <windows.h>
 #include <string>
 #include <ctime>
+#include <vector>
+#include <thread>
 
 using namespace std;
 
@@ -9,10 +11,15 @@ void gotoxy(short int x, short int y) {				 //
 	COORD pos = { x, y };						     //
 	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE); // Display clear
 	SetConsoleCursorPosition(output, pos);           // 
-}													 //
+}			
 
-const int HEIGHT = 30; // Area Height
-const int WIDTH = 50;  // Area Width
+
+
+int snakeLength = 1;                  // snake length = NEW
+vector<pair<int, int>> snakeBody;     // coord vector = NEW
+
+const int HEIGHT = 26; // Area Height
+const int WIDTH = 46;  // Area Width
 
 int score = 0; // Game score
 
@@ -20,9 +27,9 @@ char snake = 'O'; // Snake
 char apple = '*';
 
 
-
 int snake_X = WIDTH / 2;  // Position of the snake in width
 int snake_Y = HEIGHT / 2; // Position of the snake in height
+
 
 bool isRunning = true; 
 
@@ -64,6 +71,9 @@ void createArea(char arr[HEIGHT][WIDTH])
 			}
 		}
 	}
+
+	
+	snakeBody.push_back(make_pair(snake_X, snake_Y)); /////////////////////////// 
 }
 
 void printArea(char arr[HEIGHT][WIDTH])
@@ -72,7 +82,20 @@ void printArea(char arr[HEIGHT][WIDTH])
 	{
 		for (int j = 0; j < WIDTH; ++j)
 		{
-			cout << arr[i][j];
+			bool isSnakeBody = false;
+			for (const auto& segment : snakeBody)
+			{
+				if (i == segment.second && j == segment.first) ///////////////////////////
+				{
+					cout << snake;
+					isSnakeBody = true;
+					break;
+				}
+			}
+			if (!isSnakeBody)
+			{
+				cout << arr[i][j];
+			}
 		}
 		cout << endl;
 	}
@@ -90,21 +113,22 @@ int direction = RIGHT; // initial snake direction
 
 
 
+
 int main()
 {
 	LoadingMenu();
+	
 	std::srand(time(nullptr));
 
 	char arr[HEIGHT][WIDTH]{};
 
-	int apple_X = rand() % WIDTH / 2;
-	int apple_Y = rand() % HEIGHT / 2;
+	int apple_X = rand() % (WIDTH - 2) + 1;
+	int apple_Y = rand() % (HEIGHT - 2) + 1;
 
 	createArea(arr);
 	
 	while (isRunning)
 	{
-
 		if (GetKeyState('W') & 0x8000)
 		{
 			if (direction != DOWN)
@@ -133,6 +157,8 @@ int main()
 				direction = RIGHT;
 			}
 		}
+		
+
 
 		if (direction == UP)
 		{
@@ -166,10 +192,23 @@ int main()
 		{
 			++score;
 			arr[apple_Y][apple_X] = ' ';
-			apple_X = 2 + rand() % ((WIDTH - 3));
-			apple_Y = 2 + rand() % ((HEIGHT - 3));
+			apple_X = rand() % (WIDTH - 2) + 1;
+			apple_Y = rand() % (HEIGHT - 2) + 1;
+
+			
+			snakeLength++;                      //////////////////////////
+		}
+		if (snakeBody.size() == snakeLength)
+		{
+			int tail_X = snakeBody.front().first;
+			int tail_Y = snakeBody.front().second; //////////////////////////////////
+			arr[tail_Y][tail_X] = ' ';
+			snakeBody.erase(snakeBody.begin());
 		}
 
+		
+		snakeBody.push_back(make_pair(snake_X, snake_Y)); //////////////////////
+		
 		printArea(arr);
 
 		cout << "X pos: " << snake_X << endl;
@@ -179,6 +218,9 @@ int main()
 		gotoxy(0, 0);
 
 		isEnd();
+		
+		
+
 		if (isRunning == false)
 		{
 			system("CLS");
@@ -187,6 +229,8 @@ int main()
 			cout << "\t      Total score: " << score << "\n\n\n\n\n\n\n\n\n" << endl;
 			return 0;
 		}
+		
+		
 		
 	}
 	
