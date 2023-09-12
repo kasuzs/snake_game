@@ -7,6 +7,17 @@
 
 using namespace std;
 
+void cursorBlinkingDisable()
+{
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	// Изменяем свойства курсора
+	CONSOLE_CURSOR_INFO cursorInfo;
+	cursorInfo.dwSize = 1;
+	cursorInfo.bVisible = FALSE;
+	SetConsoleCursorInfo(consoleHandle, &cursorInfo);
+}
+
 void gotoxy(short int x, short int y) {				 //
 	COORD pos = { x, y };						     //
 	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE); // Display clear
@@ -117,8 +128,8 @@ int direction = RIGHT; // initial snake direction
 int main()
 {
 	LoadingMenu();
-	
-	std::srand(time(nullptr));
+	cursorBlinkingDisable();
+	srand(time(nullptr));
 
 	char arr[HEIGHT][WIDTH]{};
 
@@ -229,9 +240,6 @@ int main()
 			cout << "\t      Total score: " << score << "\n\n\n\n\n\n\n\n\n" << endl;
 			return 0;
 		}
-		
-		
-		
 	}
 	
 
