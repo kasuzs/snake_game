@@ -7,6 +7,28 @@
 
 using namespace std;
 
+class SimpleTime
+{
+public:
+	SimpleTime()
+	{
+		start = std::chrono::high_resolution_clock::now();
+	}
+	~SimpleTime()
+	{
+		end = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<float> duration = end - start;
+		cout.precision(2);
+		cout << "\t  You played: " << duration.count() << " seconds\n" << endl;
+		
+		
+	}
+private:
+
+	std::chrono::time_point<std::chrono::steady_clock> start, end;
+
+};
+
 void cursorBlinkingDisable()
 {
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -127,7 +149,10 @@ int direction = RIGHT; // initial snake direction
 
 int main()
 {
+	
+	double timeRes = clock(); // 
 	LoadingMenu();
+	SimpleTime timer;
 	cursorBlinkingDisable();
 	srand(time(nullptr));
 
@@ -140,105 +165,109 @@ int main()
 	
 	while (isRunning)
 	{
-		if (GetKeyState('W') & 0x8000)
-		{
-			if (direction != DOWN)
+			if (GetKeyState('W') & 0x8000)
 			{
-				direction = UP;
+				if (direction != DOWN)
+				{
+					direction = UP;
+				}
 			}
-		}
-		if (GetKeyState('S') & 0x8000)
-		{
-			if (direction != UP)
+			if (GetKeyState('S') & 0x8000)
 			{
-				direction = DOWN;
+				if (direction != UP)
+				{
+					direction = DOWN;
+				}
 			}
-		}
-		if (GetKeyState('A') & 0x8000)
-		{
-			if (direction != RIGHT)
+			if (GetKeyState('A') & 0x8000)
 			{
-				direction = LEFT;
+				if (direction != RIGHT)
+				{
+					direction = LEFT;
+				}
 			}
-		}
-		if (GetKeyState('D') & 0x8000)
-		{
-			if (direction != LEFT)
+			if (GetKeyState('D') & 0x8000)
 			{
-				direction = RIGHT;
+				if (direction != LEFT)
+				{
+					direction = RIGHT;
+				}
 			}
-		}
-		
+
+			if ((clock() - timeRes) / CLOCKS_PER_SEC >= 0.1)
+			{
+				timeRes = clock();
+
+			if (direction == UP)
+			{
+				arr[snake_Y][snake_X] = ' ';
+				snake_Y--;
+			}
+
+			if (direction == DOWN)
+			{
+				arr[snake_Y][snake_X] = ' ';
+				snake_Y++;
+			}
+
+			if (direction == LEFT)
+			{
+				arr[snake_Y][snake_X] = ' ';
+				snake_X--;
+			}
+
+			if (direction == RIGHT)
+			{
+				arr[snake_Y][snake_X] = ' ';
+				snake_X++;
+			}
+
+			arr[snake_Y][snake_X] = snake;
+
+			arr[apple_Y][apple_X] = apple;
+
+			if (snake_Y == apple_Y && snake_X == apple_X)
+			{
+				++score;
+				arr[apple_Y][apple_X] = ' ';
+				apple_X = rand() % (WIDTH - 2) + 1;
+				apple_Y = rand() % (HEIGHT - 2) + 1;
 
 
-		if (direction == UP)
-		{
-			arr[snake_Y][snake_X] = ' ';
-			snake_Y--;
-		}
+				snakeLength++;                      //////////////////////////
+			}
+			if (snakeBody.size() == snakeLength)
+			{
+				int tail_X = snakeBody.front().first;
+				int tail_Y = snakeBody.front().second; //////////////////////////////////
+				arr[tail_Y][tail_X] = ' ';
+				snakeBody.erase(snakeBody.begin());
+			}
 
-		if (direction == DOWN)
-		{
-			arr[snake_Y][snake_X] = ' ';
-			snake_Y++;
-		}
 
-		if (direction == LEFT)
-		{
-			arr[snake_Y][snake_X] = ' ';
-			snake_X--;
-		}
+			snakeBody.push_back(make_pair(snake_X, snake_Y)); //////////////////////
 
-		if (direction == RIGHT)
-		{
-			arr[snake_Y][snake_X] = ' ';
-			snake_X++;
-		}
-
-		arr[snake_Y][snake_X] = snake;
-
-		arr[apple_Y][apple_X] = apple;
-
-		if (snake_Y == apple_Y && snake_X == apple_X)
-		{
-			++score;
-			arr[apple_Y][apple_X] = ' ';
-			apple_X = rand() % (WIDTH - 2) + 1;
-			apple_Y = rand() % (HEIGHT - 2) + 1;
+			printArea(arr);
 
 			
-			snakeLength++;                      //////////////////////////
-		}
-		if (snakeBody.size() == snakeLength)
-		{
-			int tail_X = snakeBody.front().first;
-			int tail_Y = snakeBody.front().second; //////////////////////////////////
-			arr[tail_Y][tail_X] = ' ';
-			snakeBody.erase(snakeBody.begin());
-		}
+			cout << "\nScore: " << score << endl;
+			
 
-		
-		snakeBody.push_back(make_pair(snake_X, snake_Y)); //////////////////////
-		
-		printArea(arr);
+			gotoxy(0, 0);
 
-		cout << "X pos: " << snake_X << endl;
-		cout << "Y pos: " << snake_Y << endl;
-		cout << "Score: " << score << endl;
+			isEnd();
 
-		gotoxy(0, 0);
 
-		isEnd();
-		
-		
 
-		if (isRunning == false)
-		{
-			system("CLS");
-			system("color 6");
-			cout << "\n\n\n\n\n\n\n\n\n\n\t\tGame Over\n\n";
-			cout << "\t      Total score: " << score << "\n\n\n\n\n\n\n\n\n" << endl;
-			return 0;
+			if (isRunning == false)
+			{
+				system("CLS");
+				cout << "\n\n\n\n\n\n\n\n\n\n\t\tGame Over\n\n";
+				timer.~SimpleTime();
+				cout << "\t      Total score: " << score << "\n\n\n\n\n\n\n\n\n" << endl;
+				system("PAUSE");
+				return 0;
+			}
 		}
 	}
 	
