@@ -19,9 +19,7 @@ public:
 		end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> duration = end - start;
 		cout.precision(2);
-		cout << "\t  You played: " << duration.count() << " seconds\n" << endl;
-		
-		
+		cout << "\t  You played: " << duration.count() << " seconds\n" << endl;	
 	}
 private:
 
@@ -71,12 +69,14 @@ void LoadingMenu()
 	string text = "Loading";
 	for (int i = 0; i < 4; ++i)
 	{
-		cout << "\n\n\n\n\n\n\n\n\n\n\t\tOptimize the system\n\n";
+		cout << "\n\n\n\n\n\n\n\n\n\n";
+		cout << "\t  Use W, A, S, D to control snake" << "\n\n";
 		cout << "\t\t     " << text << "\n\n\n\n\n\n\n\n\n\n";
 		Sleep(500);
 		gotoxy(0, 0);
 		text += ".";
 	}
+	gotoxy(0, 0);
 }
 
 void isEnd()
@@ -85,6 +85,7 @@ void isEnd()
 	{
 		isRunning = false;
 	}
+	
 }
 
 
@@ -149,7 +150,6 @@ int direction = RIGHT; // initial snake direction
 
 int main()
 {
-	
 	double timeRes = clock(); // 
 	LoadingMenu();
 	SimpleTime timer;
@@ -222,6 +222,15 @@ int main()
 				snake_X++;
 			}
 
+			for (size_t i = 1; i < snakeBody.size(); ++i)
+			{
+				if (snake_X == snakeBody[i].first && snake_Y == snakeBody[i].second)
+				{
+					isRunning = false;
+					break;
+				}
+			}
+
 			arr[snake_Y][snake_X] = snake;
 
 			arr[apple_Y][apple_X] = apple;
@@ -230,8 +239,19 @@ int main()
 			{
 				++score;
 				arr[apple_Y][apple_X] = ' ';
-				apple_X = rand() % (WIDTH - 2) + 1;
-				apple_Y = rand() % (HEIGHT - 2) + 1;
+				bool isAppleOnSnake = true;
+				while (isAppleOnSnake) {
+					apple_X = rand() % (WIDTH - 2) + 1;
+					apple_Y = rand() % (HEIGHT - 2) + 1;
+					isAppleOnSnake = false;
+					for (const auto& segment : snakeBody) {
+						if (apple_X == segment.first && apple_Y == segment.second) {
+							isAppleOnSnake = true;
+							break;
+						}
+					}
+				}
+
 
 
 				snakeLength++;                      //////////////////////////
@@ -267,6 +287,7 @@ int main()
 				cout << "\t      Total score: " << score << "\n\n\n\n\n\n\n\n\n" << endl;
 				system("PAUSE");
 				return 0;
+				
 			}
 		}
 	}
